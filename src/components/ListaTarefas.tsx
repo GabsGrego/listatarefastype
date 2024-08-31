@@ -1,37 +1,64 @@
-import React from "react"; 
-import { FlatList, Text, Box } from 'native-base'; // Importa componentes do Native Base para estruturar a UI
+// Importa o hook React useState
+import React from "react";
 
-// Define a interface para as props do componente
-interface ListaTarefasProps {
-  tarefas: string[]; // Array de strings que representam as tarefas
+// Importa os componentes FlatList, Text, Box, e Input da biblioteca NativeBase
+import { Box, FlatList, Text } from 'native-base';
+
+// Importa o hook useEstadoGlobal do arquivo ../hooks/EstadoGlobal.tsx
+import { useEstadoGlobal } from "../hooks/EstadoGlobal";
+
+// Interface que define os props do componente TarefaItem
+interface TarefaItemProps {
+  id: number; // Identificador único da tarefa
+  titulo: string; // Título da tarefa
 }
 
-const ListaTarefas: React.FC<ListaTarefasProps> = ({ tarefas }) => {
+// Componente "TarefaItem" - Representa um item individual na lista de tarefas
+const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo }) => {
+
+  // **useState** - Define o estado local "editando" para controlar o modo de edição do item
+  // O estado inicial é "false" (modo de exibição)
+  const [editando, setEditando] = React.useState(false);
+
+  // **useState** - Define o estado local "novoTitulo" para armazenar o novo título durante a edição
+  // O estado inicial é o título original da tarefa ("titulo")
+  const [novoTitulo, setNovoTitulo] = React.useState(titulo);
+
+  // **Retorno** - Estrutura do componente "TarefaItem"
+  return (
+    <Box
+      flexDirection="row" // Layout em linha
+      justifyContent="space-between" // Alinhamento à direita
+      alignItems="center" // Alinhamento vertical
+      bg="yellow.200" // Cor de fundo
+      p={4} // Padding interno
+      my={2} // Margem vertical
+      mx={2} // Margem horizontal
+      borderRadius={8} // Borda arredondada
+    >
+      {/* Modo de exibição */}
+      <Text flex={3} fontSize={18}>{titulo}</Text> {/* Exibe o título da tarefa */}
+    </Box>
+  );
+};
+
+// Componente "ListaTarefas" - Exibe a lista completa de tarefas
+const ListaTarefas: React.FC = () => {
+
+  // **useEstadoGlobal** - Acessa o contexto global de estado e obtém a lista de tarefas "tarefas"
+  const { tarefas } = useEstadoGlobal();
+
+  // **Retorno** - Estrutura do componente "ListaTarefas"
   return (
     <FlatList
-      // 'data' é o array de tarefas que será mapeado para renderizar os itens da lista
-      data={tarefas}
-      
-      // 'renderItem' define como cada item da lista será renderizado
-      renderItem={({ item }) => (
-        <Box
-          bg="gray.200" // Define a cor de fundo do box (um cinza claro)
-          p={4} // Define o padding interno do box (distância do conteúdo para as bordas)
-          alignItems="flex-start" // Alinha o texto à esquerda dentro do box
-          my={2} // Margem vertical (espaço entre itens)
-          mx={2} // Margem horizontal (espaço lateral entre itens)
-        >
-          <Text>{item}</Text> {/* O texto exibido será o conteúdo da tarefa (item) */}
-        </Box>
-      )}
-      
-      // 'keyExtractor' define uma chave única para cada item com base no índice da lista
-      keyExtractor={(item, index) => index.toString()}
-      
-      // Estilização para o contêiner da lista
-      contentContainerStyle={{ flexGrow: 1 }} // Garante que a lista ocupe todo o espaço disponível
+      data={tarefas} // Lista de tarefas a serem renderizadas
+      renderItem={({ item }) => <TarefaItem id={item.id} titulo={item.titulo} />} // Renderiza cada item da lista com TarefaItem
+      keyExtractor={(item) => item.id.toString()} // Chave única para cada item (ID da tarefa)
+      contentContainerStyle={{ flexGrow: 1 }} // Permite que a lista cresça para preencher o espaço disponível
+      style={{ width: '100%', backgroundColor: '#402291' }} // Largura da lista
     />
   );
 };
 
-export default ListaTarefas; // Exporta o componente para ser usado em outros arquivos
+// Exporta o componente "ListaTarefas" para ser usado em outros arquivos
+export default ListaTarefas;
