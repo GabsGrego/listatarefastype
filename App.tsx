@@ -1,24 +1,18 @@
-// Importa o provedor de estado global
-import { ProvedorEstadoGlobal } from "./src/hooks/EstadoGlobal";
-// Importa o componente ListaTarefas
-import { NativeBaseProvider, View } from "native-base";
-import AdicionarTarefa from "./src/components/AdicionarTarefas";
-import ListaTarefas from "./src/components/ListaTarefas";
+import React from "react";
+import { NativeBaseProvider } from "native-base";
+import { ProvedorEstadoGlobal } from "./src/hooks/EstadoGlobal"; // Ajuste o caminho conforme necessário
+import AdicionarTarefa from "./src/components/AdicionarTarefas"; // Ajuste o caminho conforme necessário
+import ListaTarefas from "./src/components/ListaTarefas"; // Ajuste o caminho conforme necessário
 
-export default function App() {
-  // Retorna a estrutura da tela principal
-
+const App: React.FC = () => {
   return (
-    // Envolve a aplicação no provedor de estado global
     <NativeBaseProvider>
       <ProvedorEstadoGlobal>
-        <View style={{ flex: 1 }}>
-          {/* Componente para adicionar tarefas */}
-          <AdicionarTarefa />
-          {/* Componente que lista as tarefas */}
-          <ListaTarefas />
-        </View>
+        <AdicionarTarefa />
+        <ListaTarefas />
       </ProvedorEstadoGlobal>
     </NativeBaseProvider>
   );
-}
+};
+
+export default App;
