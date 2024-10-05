@@ -10,18 +10,21 @@ interface TarefaItemProps {
 }
 
 const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo, onUpdate, onDelete }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [newTarefa, setNewTarefa] = useState(titulo);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false); // Nome mais descritivo
+  const [newTarefa, setNewTarefa] = useState(titulo); // Guarda o novo valor da tarefa
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controla a visibilidade do modal
 
+  // Função para lidar com a atualização da tarefa
   const handleUpdate = async () => {
-    await onUpdate(id, newTarefa);
-    setIsEditing(false);
+    if (newTarefa.trim() === "") return; // Validação simples para evitar título vazio
+    await onUpdate(id, newTarefa); // Chama a função de atualização recebida via props
+    setIsEditMode(false); // Sai do modo de edição
   };
 
+  // Função para lidar com a exclusão da tarefa
   const handleDelete = async () => {
-    await onDelete(id); // Aguarde a exclusão
-    setIsOpen(false); // Feche o modal após a exclusão
+    await onDelete(id); // Aguarda a exclusão da tarefa
+    setIsModalOpen(false); // Fecha o modal após a exclusão
   };
 
   return (
@@ -35,31 +38,36 @@ const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo, onUpdate, onDelete 
       mx={2}
       borderRadius={8}
     >
-      {isEditing ? (
+      {isEditMode ? (
+        // Modo de edição
         <HStack flex={3} alignItems="center">
           <Input
             value={newTarefa}
             onChangeText={setNewTarefa}
-            onBlur={() => setIsEditing(false)}
+            onBlur={() => setIsEditMode(false)} // Sai do modo de edição ao perder o foco
             autoFocus
           />
           <IconButton icon={<AntDesign name="check" size={24} />} onPress={handleUpdate} />
         </HStack>
       ) : (
+        // Exibe o título da tarefa se não estiver no modo de edição
         <Text flex={3} fontSize={18}>{titulo}</Text>
       )}
+      
+      {/* Botões de Editar e Excluir */}
       <HStack space={2}>
         <IconButton
           icon={<AntDesign name="edit" size={24} />}
-          onPress={() => setIsEditing(!isEditing)}
+          onPress={() => setIsEditMode(!isEditMode)} // Alterna entre modo de edição
         />
         <IconButton
           icon={<MaterialIcons name="delete" size={24} />}
-          onPress={() => setIsOpen(true)} // Abre o modal de confirmação
+          onPress={() => setIsModalOpen(true)} // Abre o modal de confirmação para excluir
         />
       </HStack>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      {/* Modal de confirmação para exclusão */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Modal.Content>
           <Modal.Header>Excluir Tarefa</Modal.Header>
           <Modal.Body>
@@ -67,7 +75,7 @@ const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo, onUpdate, onDelete 
           </Modal.Body>
           <Modal.Footer>
             <Button.Group>
-              <Button colorScheme="coolGray" onPress={() => setIsOpen(false)}>
+              <Button colorScheme="coolGray" onPress={() => setIsModalOpen(false)}>
                 Cancelar
               </Button>
               <Button colorScheme="danger" onPress={handleDelete}>
