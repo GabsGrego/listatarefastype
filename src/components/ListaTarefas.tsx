@@ -95,7 +95,6 @@ const ListaTarefas: React.FC = () => {
 
   const handleUpdate = async (id: number, novoTitulo: string) => {   // mod
     const token = await AsyncStorage.getItem('token');
-    console.log("handleUpdate foi chamado KRL poha")
     if (!token) {
       console.error('Token não encontrado!');
       return;
@@ -112,9 +111,7 @@ const ListaTarefas: React.FC = () => {
       });
 
       if (response.ok) {
-        await setTarefas(prevTarefas => prevTarefas.map(tarefa => tarefa.id === id ? { ...tarefa, tarefa: novoTitulo} : tarefa));
-        console.log(tarefas);
-        
+        setTarefas(prevTarefas => prevTarefas.map(tarefa => tarefa.id === id ? { ...tarefa, tarefa: novoTitulo} : tarefa));        
         Toast.show({
           description: 'Tarefa atualizada com sucesso!',
           bgColor: "green.500"

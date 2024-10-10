@@ -16,8 +16,7 @@ const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo, onUpdate, onDelete 
 
   // Função para lidar com a atualização da tarefa
   const handleUpdate = async () => {
-    console.log("vai funcionar nao poha ?");
-    if (newTarefa.trim() === "") console.log("nova tarefa sem nome"); // Validação simples para evitar título vazio
+    if (newTarefa.trim() === "") return; // Validação simples para evitar título vazio
     await onUpdate(id, newTarefa); // Chama a função de atualização recebida via props
     setIsEditMode(false); // Sai do modo de edição
   };
@@ -45,7 +44,6 @@ const TarefaItem: React.FC<TarefaItemProps> = ({ id, titulo, onUpdate, onDelete 
           <Input
             value={newTarefa}
             onChangeText={setNewTarefa}
-            onBlur={() => setIsEditMode(false)} // Sai do modo de edição ao perder o foco
             autoFocus
           />
           <IconButton icon={<AntDesign name="check" size={24} />} onPress={handleUpdate} />
